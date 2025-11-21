@@ -3,7 +3,7 @@ name: Deploy LibreTV to Tencent CloudBase
 on:
   push:
     branches:
-      - main # 【确认！】你的主分支是 main，所以这里就是 main
+      - main 
 
 jobs:
   build-and-deploy:
@@ -16,7 +16,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16' # 适用于多数 Webpack 项目，如果后续报错，可以尝试 '18'
+        node-version: '16' 
 
     - name: Install dependencies
       run: npm install
@@ -25,9 +25,9 @@ jobs:
       run: npm run build 
 
     - name: Deploy to Tencent CloudBase Static Hosting
-      uses: TencentCloud/cloudbase-action@v1 
+      uses: tencentcloud/github-action-tcb@v1 # 【关键修改！】从 cloudbase-action 改为 github-action-tcb
       with:
         secret_id: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
         secret_key: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
         env_id: ${{ secrets.TENCENT_CLOUD_ENV_ID }}
-        static_path: 'dist' # 【100% 确定！】根据 package.json 和 Webpack 默认配置，这里就是 dist
+        static_path: 'dist'
