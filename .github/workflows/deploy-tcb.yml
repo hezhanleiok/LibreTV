@@ -19,15 +19,16 @@ jobs:
         node-version: '18' 
 
     - name: Install dependencies
-      run: npm install # 尽管没有build，但项目可能有其他依赖需要安装，保留此步
+      run: npm install
 
     - name: Install CloudBase CLI
       run: npm install -g @cloudbase/cli
 
     - name: Deploy to Tencent CloudBase Static Hosting (using CLI)
       run: |
-        tcb login --secretId ${{ secrets.TENCENT_CLOUD_SECRET_ID }} --secretKey ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
-        tcb env use ${{ secrets.TENCENT_CLOUD_ENV_ID }}
-        tcb hosting deploy ${GITHUB_WORKSPACE} -e ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 【关键修改！】部署整个工作区根目录
+        tcb logout # 先登出，确保是新的登录
+        tcb login --secretId ${{ secrets.TENCENT_CLOUD_SECRET_ID }} --secretKey ${{ secrets.TENCENT_CLOUD_SECRET_KEY }} -vv # 登录并开启详细日志
+        tcb env use ${{ secrets.TENCENT_CLOUD_ENV_ID }} -vv # 切换环境并开启详细日志
+        tcb hosting deploy ${GITHUB_WORKSPACE} -e ${{ secrets.TENCENT_CLOUD_ENV_ID }} -vv # 部署并开启详细日志
       env:
-        GITHUB_WORKSPACE: ${{ github.workspace }} 
+        GITHUB_WORKSPACE: ${{ github.workspace }}
