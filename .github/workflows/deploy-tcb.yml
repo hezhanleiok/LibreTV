@@ -24,10 +24,13 @@ jobs:
     - name: Build LibreTV
       run: npm run build 
 
-    - name: Deploy to Tencent CloudBase Static Hosting
-      uses: tencentcloud/github-action-tcb@v1 # 【关键修改！】从 cloudbase-action 改为 github-action-tcb
-      with:
-        secret_id: ${{ secrets.TENCENT_CLOUD_SECRET_ID }}
-        secret_key: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
-        env_id: ${{ secrets.TENCENT_CLOUD_ENV_ID }}
-        static_path: 'dist'
+    - name: Install CloudBase CLI
+      run: npm install -g @cloudbase/cli # 安装腾讯云开发命令行工具
+
+    - name: Deploy to Tencent CloudBase Static Hosting (using CLI)
+      run: |
+        tcb login --secretId ${{ secrets.TENCENT_CLOUD_SECRET_ID }} --secretKey ${{ secrets.TENCENT_CLOUD_SECRET_KEY }} # 登录
+        tcb env use ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 切换到你的云开发环境
+        tcb hosting deploy ${GITHUB_WORKSPACE}/dist -e ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 部署静态网站
+      env:
+        GITHUB_WORKSPACE: ${{ github.workspace }} # 定义工作区路径
