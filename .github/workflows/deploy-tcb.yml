@@ -30,4 +30,4 @@ jobs:
         tcb env use ${{ secrets.TENCENT_CLOUD_ENV_ID }}
         tcb hosting deploy ${GITHUB_WORKSPACE} -e ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 【关键修改！】部署整个工作区根目录
       env:
-        GITHUB_WORKSPACE: ${{ github.workspace }}
+        GITHUB_WORKSPACE: ${{ github.workspace }} 
