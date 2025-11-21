@@ -19,18 +19,15 @@ jobs:
         node-version: '16' 
 
     - name: Install dependencies
-      run: npm install
-
-    - name: Build LibreTV
-      run: npm run build 
+      run: npm install # 尽管没有build，但项目可能有其他依赖需要安装，保留此步
 
     - name: Install CloudBase CLI
-      run: npm install -g @cloudbase/cli # 安装腾讯云开发命令行工具
+      run: npm install -g @cloudbase/cli
 
     - name: Deploy to Tencent CloudBase Static Hosting (using CLI)
       run: |
-        tcb login --secretId ${{ secrets.TENCENT_CLOUD_SECRET_ID }} --secretKey ${{ secrets.TENCENT_CLOUD_SECRET_KEY }} # 登录
-        tcb env use ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 切换到你的云开发环境
-        tcb hosting deploy ${GITHUB_WORKSPACE}/dist -e ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 部署静态网站
+        tcb login --secretId ${{ secrets.TENCENT_CLOUD_SECRET_ID }} --secretKey ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
+        tcb env use ${{ secrets.TENCENT_CLOUD_ENV_ID }}
+        tcb hosting deploy ${GITHUB_WORKSPACE} -e ${{ secrets.TENCENT_CLOUD_ENV_ID }} # 【关键修改！】部署整个工作区根目录
       env:
-        GITHUB_WORKSPACE: ${{ github.workspace }} # 定义工作区路径
+        GITHUB_WORKSPACE: ${{ github.workspace }}
